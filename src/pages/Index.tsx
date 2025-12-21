@@ -1,4 +1,5 @@
 import { Helmet } from "react-helmet-async";
+import Header from "@/components/Header";
 import HeroSection from "@/components/HeroSection";
 import AuthoritySection from "@/components/AuthoritySection";
 import BenefitsSection from "@/components/BenefitsSection";
@@ -21,6 +22,7 @@ const Index = () => {
       </Helmet>
 
       <main className="min-h-screen bg-background">
+        <Header />
         <HeroSection />
         <AuthoritySection />
         <BenefitsSection />
