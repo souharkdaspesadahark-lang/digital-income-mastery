@@ -5,6 +5,8 @@ import AuthoritySection from "@/components/AuthoritySection";
 import BenefitsSection from "@/components/BenefitsSection";
 import FAQSection from "@/components/FAQSection";
 import SocialProofSection from "@/components/SocialProofSection";
+import TestimonialsSection from "@/components/TestimonialsSection";
+import PsychologyCTA from "@/components/PsychologyCTA";
 import CTASection from "@/components/CTASection";
 import Footer from "@/components/Footer";
 
@@ -24,10 +26,15 @@ const Index = () => {
       <main className="min-h-screen bg-background">
         <Header />
         <HeroSection />
+        <PsychologyCTA variant="opportunity" />
         <AuthoritySection />
         <BenefitsSection />
+        <PsychologyCTA variant="scarcity" />
+        <TestimonialsSection />
         <SocialProofSection />
+        <PsychologyCTA variant="fear" />
         <FAQSection />
+        <PsychologyCTA variant="social" />
         <CTASection />
         <Footer />
       </main>
