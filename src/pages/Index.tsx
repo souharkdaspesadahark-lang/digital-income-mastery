@@ -9,6 +9,7 @@ import TestimonialsSection from "@/components/TestimonialsSection";
 import PsychologyCTA from "@/components/PsychologyCTA";
 import CTASection from "@/components/CTASection";
 import Footer from "@/components/Footer";
+import LimitedSpotsCounter from "@/components/LimitedSpotsCounter";
 
 const Index = () => {
   return (
@@ -24,6 +25,7 @@ const Index = () => {
       </Helmet>
 
       <main className="min-h-screen bg-background">
+        <LimitedSpotsCounter />
         <Header />
         <HeroSection />
         <PsychologyCTA variant="opportunity" />
