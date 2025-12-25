@@ -1,8 +1,11 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
+import { useSiteSettings } from "@/hooks/useSiteSettings";
 
 const StickyCTA = () => {
+  const { data: settings } = useSiteSettings();
+  const ctaLink = settings?.main_cta_link || "https://pay.kiwify.com.br/stPj5Aq?afid=Gm9OtlYz";
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
@@ -29,7 +32,7 @@ const StickyCTA = () => {
           className="w-full sm:w-auto py-4 sm:py-3"
           asChild
         >
-          <a href="https://pay.kiwify.com.br/stPj5Aq?afid=Gm9OtlYz" target="_blank" rel="noopener noreferrer">
+          <a href={ctaLink} target="_blank" rel="noopener noreferrer">
             QUERO COMEÇAR AGORA
             <ArrowRight className="w-4 h-4" />
           </a>
