@@ -5,9 +5,11 @@ import { useSiteSettingsList, useUpdateSiteSetting } from "@/hooks/useSiteSettin
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
-import { LogOut, Save, Link, Settings, ArrowLeft } from "lucide-react";
+import { LogOut, Save, Link, Settings, ArrowLeft, Type, Palette } from "lucide-react";
 
 const Admin = () => {
   const navigate = useNavigate();
@@ -65,6 +67,98 @@ const Admin = () => {
     } catch (error) {
       toast.error("Erro ao salvar configurações");
     }
+  };
+
+  // Categorize settings
+  const linkSettings = settings?.filter(s => 
+    s.key.includes('link') || s.key.includes('whatsapp')
+  ) || [];
+  
+  const textSettings = settings?.filter(s => 
+    s.key.includes('text') || s.key.includes('title') || s.key.includes('subtitle')
+  ) || [];
+  
+  const colorSettings = settings?.filter(s => 
+    s.key.includes('color')
+  ) || [];
+
+  const renderSettingInput = (setting: { key: string; label: string | null; value: string }) => {
+    const isTextArea = setting.key.includes('subtitle');
+    const isColor = setting.key.includes('color');
+    
+    return (
+      <div key={setting.key} className="space-y-2">
+        <Label htmlFor={setting.key}>
+          {setting.label || setting.key}
+        </Label>
+        <div className="flex gap-2">
+          {isColor ? (
+            <div className="flex-1 flex gap-2">
+              <Input
+                id={setting.key}
+                value={formValues[setting.key] || ""}
+                onChange={(e) => 
+                  setFormValues((prev) => ({
+                    ...prev,
+                    [setting.key]: e.target.value,
+                  }))
+                }
+                placeholder="Ex: 42 100% 50%"
+              />
+              <div 
+                className="w-12 h-10 rounded-md border border-border flex-shrink-0"
+                style={{ backgroundColor: `hsl(${formValues[setting.key] || '0 0% 50%'})` }}
+              />
+            </div>
+          ) : isTextArea ? (
+            <Textarea
+              id={setting.key}
+              value={formValues[setting.key] || ""}
+              onChange={(e) => 
+                setFormValues((prev) => ({
+                  ...prev,
+                  [setting.key]: e.target.value,
+                }))
+              }
+              placeholder="Digite aqui..."
+              rows={3}
+              className="flex-1"
+            />
+          ) : (
+            <Input
+              id={setting.key}
+              value={formValues[setting.key] || ""}
+              onChange={(e) => 
+                setFormValues((prev) => ({
+                  ...prev,
+                  [setting.key]: e.target.value,
+                }))
+              }
+              placeholder={
+                setting.key.includes("link") 
+                  ? "https://..." 
+                  : setting.key.includes("whatsapp")
+                  ? "5511999999999"
+                  : "Digite aqui..."
+              }
+              className="flex-1"
+            />
+          )}
+          <Button 
+            size="icon"
+            onClick={() => handleSave(setting.key)}
+            disabled={updateSetting.isPending}
+          >
+            <Save className="h-4 w-4" />
+          </Button>
+        </div>
+        {isColor && (
+          <p className="text-xs text-muted-foreground">
+            Formato HSL: Matiz Saturação% Luminosidade% (ex: 42 100% 50%)
+          </p>
+        )}
+      </div>
+    );
   };
 
   if (authLoading) {
@@ -173,71 +267,111 @@ const Admin = () => {
 
       <main className="container mx-auto px-4 py-8">
         <div className="max-w-2xl mx-auto space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Link className="h-5 w-5" />
-                Gerenciar Links
-              </CardTitle>
-              <CardDescription>
-                Configure os links que aparecem nos botões do site
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              {settingsLoading ? (
-                <div className="animate-pulse space-y-4">
-                  {[1, 2, 3, 4].map((i) => (
-                    <div key={i} className="h-16 bg-muted rounded" />
-                  ))}
-                </div>
-              ) : (
-                <>
-                  {settings?.map((setting) => (
-                    <div key={setting.key} className="space-y-2">
-                      <Label htmlFor={setting.key}>
-                        {setting.label || setting.key}
-                      </Label>
-                      <div className="flex gap-2">
-                        <Input
-                          id={setting.key}
-                          value={formValues[setting.key] || ""}
-                          onChange={(e) => 
-                            setFormValues((prev) => ({
-                              ...prev,
-                              [setting.key]: e.target.value,
-                            }))
-                          }
-                          placeholder={
-                            setting.key.includes("link") 
-                              ? "https://..." 
-                              : setting.key.includes("whatsapp")
-                              ? "5511999999999"
-                              : "Digite aqui..."
-                          }
-                        />
-                        <Button 
-                          size="icon"
-                          onClick={() => handleSave(setting.key)}
-                          disabled={updateSetting.isPending}
-                        >
-                          <Save className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    </div>
-                  ))}
+          <Tabs defaultValue="links" className="w-full">
+            <TabsList className="grid w-full grid-cols-3">
+              <TabsTrigger value="links" className="flex items-center gap-2">
+                <Link className="h-4 w-4" />
+                Links
+              </TabsTrigger>
+              <TabsTrigger value="texts" className="flex items-center gap-2">
+                <Type className="h-4 w-4" />
+                Textos
+              </TabsTrigger>
+              <TabsTrigger value="colors" className="flex items-center gap-2">
+                <Palette className="h-4 w-4" />
+                Cores
+              </TabsTrigger>
+            </TabsList>
 
-                  <div className="pt-4 border-t">
-                    <Button 
-                      className="w-full"
-                      onClick={handleSaveAll}
-                      disabled={updateSetting.isPending}
-                    >
-                      <Save className="h-4 w-4 mr-2" />
-                      Salvar Todas as Configurações
-                    </Button>
-                  </div>
-                </>
-              )}
+            <TabsContent value="links">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Gerenciar Links</CardTitle>
+                  <CardDescription>
+                    Configure os links que aparecem nos botões do site
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  {settingsLoading ? (
+                    <div className="animate-pulse space-y-4">
+                      {[1, 2, 3].map((i) => (
+                        <div key={i} className="h-16 bg-muted rounded" />
+                      ))}
+                    </div>
+                  ) : linkSettings.length > 0 ? (
+                    linkSettings.map(renderSettingInput)
+                  ) : (
+                    <p className="text-muted-foreground text-center py-4">
+                      Nenhuma configuração de link encontrada
+                    </p>
+                  )}
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="texts">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Gerenciar Textos</CardTitle>
+                  <CardDescription>
+                    Edite os textos dos títulos e botões
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  {settingsLoading ? (
+                    <div className="animate-pulse space-y-4">
+                      {[1, 2, 3].map((i) => (
+                        <div key={i} className="h-16 bg-muted rounded" />
+                      ))}
+                    </div>
+                  ) : textSettings.length > 0 ? (
+                    textSettings.map(renderSettingInput)
+                  ) : (
+                    <p className="text-muted-foreground text-center py-4">
+                      Nenhuma configuração de texto encontrada
+                    </p>
+                  )}
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="colors">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Gerenciar Cores</CardTitle>
+                  <CardDescription>
+                    Personalize as cores do tema (formato HSL)
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  {settingsLoading ? (
+                    <div className="animate-pulse space-y-4">
+                      {[1, 2].map((i) => (
+                        <div key={i} className="h-16 bg-muted rounded" />
+                      ))}
+                    </div>
+                  ) : colorSettings.length > 0 ? (
+                    colorSettings.map(renderSettingInput)
+                  ) : (
+                    <p className="text-muted-foreground text-center py-4">
+                      Nenhuma configuração de cor encontrada
+                    </p>
+                  )}
+                </CardContent>
+              </Card>
+            </TabsContent>
+          </Tabs>
+
+          <Card>
+            <CardContent className="pt-6">
+              <Button 
+                className="w-full"
+                onClick={handleSaveAll}
+                disabled={updateSetting.isPending}
+              >
+                <Save className="h-4 w-4 mr-2" />
+                Salvar Todas as Configurações
+              </Button>
             </CardContent>
           </Card>
         </div>

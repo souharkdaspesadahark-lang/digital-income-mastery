@@ -5,6 +5,9 @@ import { useSiteSettings } from "@/hooks/useSiteSettings";
 const HeroSection = () => {
   const { data: settings } = useSiteSettings();
   const ctaLink = settings?.main_cta_link || "https://pay.kiwify.com.br/stPj5Aq?afid=Gm9OtlYz";
+  const ctaButtonText = settings?.cta_button_text || "QUERO COMEÇAR AGORA";
+  const heroTitle = settings?.hero_title || "De R$0 a Renda Extra Com Apenas o Celular";
+  const heroSubtitle = settings?.hero_subtitle || "Método simples que qualquer pessoa pode aplicar, mesmo sem experiência.";
 
   return (
     <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden bg-gradient-dark pt-8 md:pt-0">
@@ -22,17 +25,22 @@ const HeroSection = () => {
             <span className="text-sm font-semibold text-destructive">VAGAS LIMITADAS — Oferta por tempo limitado</span>
           </div>
 
-          {/* Main Headline - Stronger promise */}
+          {/* Main Headline - Dynamic */}
           <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold leading-[1.1] mb-6 animate-fade-up">
-            De R$0 a{" "}
-            <span className="text-gradient-gold">Renda Extra</span>{" "}
-            <br className="hidden sm:block" />
-            Com Apenas o Celular
+            {heroTitle.includes("Renda Extra") ? (
+              <>
+                {heroTitle.split("Renda Extra")[0]}
+                <span className="text-gradient-gold">Renda Extra</span>
+                {heroTitle.split("Renda Extra")[1]}
+              </>
+            ) : (
+              heroTitle
+            )}
           </h1>
 
           {/* Direct benefit subheadline */}
           <p className="text-lg md:text-xl text-foreground/90 font-medium max-w-2xl mx-auto mb-4 animate-fade-up" style={{ animationDelay: '0.15s' }}>
-            Método simples que qualquer pessoa pode aplicar, mesmo sem experiência.
+            {heroSubtitle}
           </p>
           
           <p className="text-base md:text-lg text-muted-foreground max-w-xl mx-auto mb-8 animate-fade-up" style={{ animationDelay: '0.25s' }}>
@@ -48,7 +56,7 @@ const HeroSection = () => {
               asChild
             >
               <a href={ctaLink} target="_blank" rel="noopener noreferrer">
-                QUERO COMEÇAR AGORA
+                {ctaButtonText}
                 <ArrowRight className="w-5 h-5 md:w-6 md:h-6" />
               </a>
             </Button>
