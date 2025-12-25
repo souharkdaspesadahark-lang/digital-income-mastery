@@ -1,8 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, CheckCircle, Lock, Shield, Clock } from "lucide-react";
 import { useState, useEffect } from "react";
+import { useSiteSettings } from "@/hooks/useSiteSettings";
 
 const CTASection = () => {
+  const { data: settings } = useSiteSettings();
+  const ctaLink = settings?.main_cta_link || "https://pay.kiwify.com.br/stPj5Aq?afid=Gm9OtlYz";
   const [timeLeft, setTimeLeft] = useState({
     hours: 2,
     minutes: 0,
@@ -115,7 +118,7 @@ const CTASection = () => {
             className="text-xl py-7 px-12 animate-pulse"
             asChild
           >
-            <a href="https://pay.kiwify.com.br/stPj5Aq?afid=Gm9OtlYz" target="_blank" rel="noopener noreferrer">
+            <a href={ctaLink} target="_blank" rel="noopener noreferrer">
               Quero Garantir Meu Acesso Agora
               <ArrowRight className="w-6 h-6" />
             </a>

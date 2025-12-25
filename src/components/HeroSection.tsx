@@ -1,7 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Zap, Shield, Clock } from "lucide-react";
+import { useSiteSettings } from "@/hooks/useSiteSettings";
 
 const HeroSection = () => {
+  const { data: settings } = useSiteSettings();
+  const ctaLink = settings?.main_cta_link || "https://pay.kiwify.com.br/stPj5Aq?afid=Gm9OtlYz";
+
   return (
     <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden bg-gradient-dark pt-8 md:pt-0">
       {/* Background effects */}
@@ -43,7 +47,7 @@ const HeroSection = () => {
               className="w-full sm:w-auto text-lg md:text-xl py-5 md:py-7 px-8 md:px-12 animate-pulse-slow"
               asChild
             >
-              <a href="https://pay.kiwify.com.br/stPj5Aq?afid=Gm9OtlYz" target="_blank" rel="noopener noreferrer">
+              <a href={ctaLink} target="_blank" rel="noopener noreferrer">
                 QUERO COMEÇAR AGORA
                 <ArrowRight className="w-5 h-5 md:w-6 md:h-6" />
               </a>

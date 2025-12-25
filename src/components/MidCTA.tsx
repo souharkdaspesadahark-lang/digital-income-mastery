@@ -1,11 +1,14 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
+import { useSiteSettings } from "@/hooks/useSiteSettings";
 
 interface MidCTAProps {
   variant?: "default" | "urgent";
 }
 
 const MidCTA = ({ variant = "default" }: MidCTAProps) => {
+  const { data: settings } = useSiteSettings();
+  const ctaLink = settings?.main_cta_link || "https://pay.kiwify.com.br/stPj5Aq?afid=Gm9OtlYz";
   return (
     <section className="py-12 md:py-16 bg-gradient-to-r from-primary/10 via-primary/5 to-primary/10 relative">
       <div className="container px-4 md:px-6">
@@ -36,7 +39,7 @@ const MidCTA = ({ variant = "default" }: MidCTAProps) => {
             className="w-full sm:w-auto"
             asChild
           >
-            <a href="https://pay.kiwify.com.br/stPj5Aq?afid=Gm9OtlYz" target="_blank" rel="noopener noreferrer">
+            <a href={ctaLink} target="_blank" rel="noopener noreferrer">
               QUERO COMEÇAR AGORA
               <ArrowRight className="w-5 h-5" />
             </a>
